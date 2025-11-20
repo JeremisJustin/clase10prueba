@@ -1,0 +1,44 @@
+# Nombre del workflow. Se mostrará en la pestaña "Actions" de tu repositorio de GitHub.
+name: Run Tests
+
+# Define los eventos que activarán la ejecución de este workflow.
+on:
+  # Se ejecuta cuando se hace un push a la rama "main".
+  push:
+    branches: [ main ]
+  # Se ejecuta cuando se crea o actualiza un pull request dirigido a la rama "main".
+  pull_request:
+    branches: [ main ]
+
+# Define uno o más trabajos (jobs) que se ejecutarán.
+jobs:
+  # El nombre del trabajo. Puedes elegir el que quieras.
+  build-and-test:
+    # El tipo de máquina virtual en la que se ejecutará el trabajo.
+    # "ubuntu-latest" es una opción común y versátil.
+    runs-on: ubuntu-latest
+
+    # Los pasos (steps) representan una secuencia de tareas que se ejecutarán como parte del trabajo.
+    steps:
+      # 1. Clona tu repositorio en la máquina virtual.
+      # Esto es necesario para que el workflow tenga acceso a tu código.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura el entorno de Node.js.
+      # Puedes especificar la versión de Node.js que necesita tu proyecto.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # O la versión que uses, ej: '18', '20.x'
+          cache: 'npm' # Opcional: activa el cache para las dependencias de npm para acelerar futuras ejecuciones.
+
+      # 3. Instala las dependencias del proyecto.
+      # Ejecuta el comando "npm install".
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Ejecuta los tests.
+      # Asume que tienes un script "test" en tu package.json.
+      - name: Run tests
+        run: npm test
